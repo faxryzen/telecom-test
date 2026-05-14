@@ -1,20 +1,19 @@
 ## Сборка и запуск
-Проект собран на **Ubuntu 20.04.6 LTS**. Для запуска из корня проекта:
-```shell
-./build/output simulator_description.txt
-```
-Вы можете сами собрать проект для добавления нового алгоритма работы бота (об этом ниже) с помощью `CMake`. Для сборки требуется:
+Для сборки требуется:
 - Компилятор с поддержкой С++17 (GCC, Clang, MSVC)
 - CMake 3.10+
+- Boost.Test (для unit-тестирования)
 #### Linux
-В корне проекта:
 ```bash
+sudo apt update
+sudo apt install cmake g++ libboost-all-dev -y
+
 mkdir build && cd build
 cmake ..
 make
-cd ..
-./build/output simulator_description.txt
+./output simulator_description.txt
 ```
+Чтобы все описания автоматически скопировались в `build`, положите их в `descriptions/` в корне проекта
 #### Windows (MSVC)
 ```shell
 mkdir build
@@ -40,13 +39,13 @@ cd ..
 Передвижения в другую комнату всегда стоит единицу еды. Сбор ресурса в конкретной комнате стоит единицу еды, если в ней уже собирали ресурсы. Каждый ресурс собирается отдельно, но сразу всей пачкой. Если в комнате лежит `10 gems`, то персонаж сразу собирает `10 gems`. 
 ## Как добавить свой алгоритм?
 
-Создайте `<your_bot>.hpp/<your_bot>.cpp` и поместите в `src/bots/`. Наследуйтесь от класса `Bot` из `simulator.hpp` и реализуйте алгоритм в методе `void run(std::ostream & output)`. После создайте экземпляр вашего класса в `main` и вызывайте `run()`:
+Создайте `<your_bot>.hpp/<your_bot>.cpp` и поместите в `src/bots/`. Наследуйтесь от класса `Simulator` из `simulator.hpp` и реализуйте алгоритм в методе `void runBot(std::ostream & output)`. После создайте экземпляр вашего класса и вызывайте `runBot()`:
 ```cpp
 terra::Dungeon dungeon(rooms);
-YourBot bot(dungeon, food_count, needful_resource);
-bot.run(output);
+AliceBot sim(dungeon, food, needful_result);
+sim.runBot(output);
 ```
-Класс `Bot` **предоставляет методы для обхода комнат и составления своего алгоритма**:
+Класс `Simulator` **предоставляет методы для обхода комнат и составления своего алгоритма**:
 #### Вывод в `std::ostream`
 
 ```cpp
@@ -174,4 +173,6 @@ go 0
 result 0 4 3 0 182
 //             ^^^ 4*11 + 3*23*2 = 182
 ```
+## Тестирование
 
+Все тесты лежат в `tests/`. Запускаются с `./tests` и на данный момент проверяют корректность чтения входных данных и работу бота `AliceBot`
