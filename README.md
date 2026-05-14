@@ -16,13 +16,13 @@ make
 ```
 Чтобы все описания автоматически скопировались в `build`, положите их в `descriptions/` в корне проекта
 #### Windows (MSVC)
+Можно собрать и без Boost. Не будут работать тесты
 ```shell
 mkdir build
 cd build
 cmake ..
 cmake --build . --config Release
-cd ..
-.\build\Release\output.exe simulator_description.txt
+.\Release\output.exe simulator_description.txt
 ```
 ## Запуск
 
